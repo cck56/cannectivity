@@ -1,0 +1,2 @@
+config BOARD_DUALCANFD_G0
+	select SOC_STM32G0B1XX

@@ -1,0 +1,6 @@
+board:
+  name: dualcanfd_g0
+  full_name: DualCAN FD G0
+  vendor: others
+  socs:
+    - name: stm32g0b1xx
