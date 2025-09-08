@@ -332,6 +332,55 @@ config CANNECTIVITY_USB_DFU_SPEC_ID
 
 endif # CANNECTIVITY_DFU_SUPPORT
 
+menu "Board Initialization"
+
+config CANNECTIVITY_BOARD_INIT
+	bool "Enable board-specific initialization"
+	default n
+	help
+	  Enable board-specific initialization routines that run during system startup.
+	  This allows for hardware-specific configuration that cannot be handled through
+	  devicetree or standard Kconfig options.
+
+if CANNECTIVITY_BOARD_INIT
+
+config CANNECTIVITY_BOARD_INIT_EARLY
+	bool "Run board initialization early in boot process"
+	default y
+	help
+	  Run board initialization as a system init function early in the boot process
+	  (PRE_KERNEL_1 phase). If disabled, board_init must be called manually from main().
+
+config CANNECTIVITY_BOARD_INIT_PRIORITY
+	int "Board initialization priority"
+	default 50
+	range 0 99
+	depends on CANNECTIVITY_BOARD_INIT_EARLY
+	help
+	  Priority for board initialization within the PRE_KERNEL_1 initialization phase.
+	  Lower values run earlier.
+
+config CANNECTIVITY_BOARD_INIT_STM32G0_OPTION_BYTES
+	bool "Configure STM32G0 option bytes for BOOT0"
+	default y if SOC_SERIES_STM32G0X
+	depends on SOC_SERIES_STM32G0X
+	help
+	  Configure STM32G0 option bytes to ensure nBOOT_SEL is set to 0,
+	  enabling BOOT0 pin for boot mode selection. This is required for
+	  proper boot behavior on STM32G0-based dual CAN-FD boards.
+
+config CANNECTIVITY_BOARD_INIT_CUSTOM
+	bool "Enable custom board initialization hook"
+	default n
+	help
+	  Enable a custom board initialization hook that can be implemented
+	  in board-specific code. The function cannectivity_board_init_custom()
+	  will be called during board initialization.
+
+endif # CANNECTIVITY_BOARD_INIT
+
+endmenu
+
 endmenu
 
 source "Kconfig.zephyr"

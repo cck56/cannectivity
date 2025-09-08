@@ -50,3 +50,7 @@ target_sources_ifdef(CONFIG_CANNECTIVITY_TERMINATION_GPIO app PRIVATE
 target_sources_ifdef(CONFIG_CANNECTIVITY_DFU_SUPPORT app PRIVATE
   src/dfu.c
 )
+
+target_sources_ifdef(CONFIG_CANNECTIVITY_BOARD_INIT app PRIVATE
+  src/board_init.c
+)

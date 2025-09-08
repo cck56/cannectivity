@@ -14,6 +14,10 @@
 #include "cannectivity.h"
 #include "zephyr/app_version.h"
 
+#ifdef CONFIG_CANNECTIVITY_BOARD_INIT
+#include "board_init.h"
+#endif
+
 LOG_MODULE_REGISTER(main, CONFIG_CANNECTIVITY_LOG_LEVEL);
 
 #ifdef CONFIG_CANNECTIVITY_BOOT_BANNER
@@ -54,6 +58,15 @@ int main(void)
 #ifdef CONFIG_CANNECTIVITY_BOOT_BANNER
 	printk("*** CANnectivity firmware " CANNECTIVITY_BANNER_VERSION " ***\n");
 #endif /* CONFIG_CANNECTIVITY_BOOT_BANNER */
+
+#if defined(CONFIG_CANNECTIVITY_BOARD_INIT) && !defined(CONFIG_CANNECTIVITY_BOARD_INIT_EARLY)
+	/* Run board initialization if not already done early */
+	err = cannectivity_board_init();
+	if (err != 0) {
+		LOG_ERR("Board initialization failed (err %d)", err);
+		return 0;
+	}
+#endif
 
 	if (!device_is_ready(gs_usb)) {
 		LOG_ERR("gs_usb USB device not ready");
